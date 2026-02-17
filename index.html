@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>เข้าสู่ระบบ</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="card">
+<h2>เข้าสู่ระบบ</h2>
+
+<form onsubmit="login(event)">
+<input type="text" id="username" placeholder="ชื่อผู้ใช้" required>
+<input type="password" id="password" placeholder="รหัสผ่าน" required>
+<button type="submit">เข้าสู่ระบบ</button>
+</form>
+
+<p>ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิก</a></p>
+</div>
+
+<script>
+function login(e){
+e.preventDefault();
+
+let user=document.getElementById("username").value;
+let pass=document.getElementById("password").value;
+
+let stored=localStorage.getItem(user);
+
+if(!stored){
+alert("ไม่พบผู้ใช้");
+return;
+}
+
+let userData=JSON.parse(stored);
+
+if(userData.password!==pass){
+alert("รหัสผ่านผิด");
+return;
+}
+
+localStorage.setItem("currentUser",user);
+window.location.href="dashboard.html";
+}
+</script>
+
+</body>
+</html>
