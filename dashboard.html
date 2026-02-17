@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>หน้าหลัก</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="card">
+<h2>บันทึกรายรับรายจ่าย</h2>
+<p id="welcome"></p>
+
+<form onsubmit="addItem(event)">
+<input type="text" id="itemName" placeholder="ชื่อรายการ" required>
+<input type="number" id="amount" placeholder="จำนวนเงิน" required>
+<select id="type">
+<option value="รายรับ">รายรับ</option>
+<option value="รายจ่าย">รายจ่าย</option>
+</select>
+<button type="submit">เพิ่มรายการ</button>
+</form>
+
+<table>
+<thead>
+<tr>
+<th>รายการ</th>
+<th>จำนวน</th>
+<th>ประเภท</th>
+</tr>
+</thead>
+<tbody id="dataTable"></tbody>
+</table>
+
+<hr>
+
+<h3>สรุปยอดรวม</h3>
+<p>รายรับรวม: <span id="totalIncome">0</span> บาท</p>
+<p>รายจ่ายรวม: <span id="totalExpense">0</span> บาท</p>
+<p>คงเหลือสุทธิ: <span id="balance">0</span> บาท</p>
+
+<br>
+<button onclick="logout()">ออกจากระบบ</button>
+</div>
+
+<script>
+
+let currentUser=localStorage.getItem("currentUser");
+
+if(!currentUser){
+window.location.href="index.html";
+}
+
+document.getElementById("welcome").innerText="สวัสดี "+currentUser+" 💖";
+
+function loadData(){
+let userData=JSON.parse(localStorage.getItem(currentUser));
+let data=userData.data;
+let table=document.getElementById("dataTable");
+table.innerHTML="";
+
+data.forEach(item=>{
+table.innerHTML+=`
+<tr>
+<td>${item.name}</td>
+<td>${item.amount}</td>
+<td>${item.type}</td>
+</tr>`;
+});
+
+calculateTotals(data);
+}
+
+function addItem(e){
+e.preventDefault();
+
+let name=document.getElementById("itemName").value;
+let amount=document.getElementById("amount").value;
+let type=document.getElementById("type").value;
+
+let userData=JSON.parse(localStorage.getItem(currentUser));
+userData.data.push({name,amount,type});
+localStorage.setItem(currentUser,JSON.stringify(userData));
+
+loadData();
+e.target.reset();
+}
+
+function calculateTotals(data){
+let income=0;
+let expense=0;
+
+data.forEach(item=>{
+let amt=Number(item.amount);
+if(item.type==="รายรับ") income+=amt;
+else expense+=amt;
+});
+
+document.getElementById("totalIncome").innerText=income;
+document.getElementById("totalExpense").innerText=expense;
+document.getElementById("balance").innerText=income-expense;
+}
+
+function logout(){
+localStorage.removeItem("currentUser");
+window.location.href="index.html";
+}
+
+loadData();
+</script>
+
+</body>
+</html>
