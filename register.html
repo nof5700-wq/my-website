@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>สมัครสมาชิก</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="card">
+<h2>สมัครสมาชิก</h2>
+
+<form onsubmit="register(event)">
+<input type="text" id="username" placeholder="ชื่อผู้ใช้" required>
+<input type="password" id="password" placeholder="รหัสผ่าน" required>
+<button type="submit">สมัครสมาชิก</button>
+</form>
+
+<p>มีบัญชีแล้ว? <a href="index.html">เข้าสู่ระบบ</a></p>
+</div>
+
+<script>
+function register(e){
+e.preventDefault();
+
+let user=document.getElementById("username").value;
+let pass=document.getElementById("password").value;
+
+if(localStorage.getItem(user)){
+alert("มีผู้ใช้นี้แล้ว");
+return;
+}
+
+localStorage.setItem(user, JSON.stringify({password:pass,data:[]}));
+alert("สมัครสำเร็จ");
+window.location.href="index.html";
+}
+</script>
+
+</body>
+</html>
